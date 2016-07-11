@@ -1,10 +1,9 @@
-import StartApp.Simple as S exposing (start)
 import String exposing (..)
 import Html exposing (..)
 import Html.Attributes as A exposing (..)
 import Html.Events exposing (..)
+import Html.App exposing (beginnerProgram)
 import Result exposing (..)
-import Signal exposing (..)
 
 sierpinski : Int -> List String
 sierpinski n =
@@ -15,12 +14,12 @@ sierpinski n =
        _ ->    List.map ((\st -> space n ++ st) << (\st -> st ++ space n)) (down n) 
             ++ List.map (join " " << List.repeat 2) (down n)
 
-main = S.start { model = "4", view = view, update = update }
+main = beginnerProgram { model = "4", view = view, update = update }
 
 update newStr oldStr = newStr
 
-view : Address String -> String -> Html
-view address levelString =
+view : String -> Html String
+view levelString =
   div []
     ([ Html.form 
           [] 
@@ -28,7 +27,7 @@ view address levelString =
           , input
             [ placeholder "triangle level."
             , value levelString
-            , on "input" targetValue (Signal.message address)
+            , on "input" targetValue 
             , type' "number"
             , A.min "0"
             , myStyle
@@ -43,7 +42,7 @@ view address levelString =
                |> List.map (\s -> div [] [text s]))
      ])
 
-myStyle : Attribute
+myStyle : Attribute msg
 myStyle =
   style
     [ ("height", "20px")
